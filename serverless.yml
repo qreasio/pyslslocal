@@ -1,0 +1,20 @@
+
+
+service: pylocaltest
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: python3.7
+
+stage: dev
+
+functions:
+  first:
+    handler: handler.hello
+    name: theFirst 
+  second:
+    handler: handler.welcome
+    name: theSecond

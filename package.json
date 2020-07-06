@@ -1,0 +1,12 @@
+{
+  "name": "pylocaltest",
+  "version": "1.0.0",
+  "description": "Serverless CRUD service exposing a REST HTTP interface",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "serverless-offline": "^6.4.0",
+    "serverless-step-functions": "^2.21.1",
+    "serverless-step-functions-offline": "^2.1.4"
+  }
+}
