@@ -3,6 +3,9 @@
 service: pylocaltest
 
 plugins:
+  - serverless-step-functions
+  - serverless-offline-stepfunctions-local
+  - serverless-offline-stepfunctions-plugin
   - serverless-offline
 
 provider:
@@ -14,7 +17,35 @@ stage: dev
 functions:
   first:
     handler: handler.hello
-    name: theFirst 
+    name: theFirst
   second:
     handler: handler.welcome
     name: theSecond
+
+stepFunctions:
+  stateMachines:
+    foo:
+      definition:
+        StartAt: first
+        States:
+          first:
+              Type: Task
+              Resource: arn:aws:lambda:us-east-1:123456789:function:first
+              Next: welcome
+          welcome:
+            Type: Task
+            Resource: arn:aws:lambda:us-east-1:123456789:function:second
+            End: true
+
+custom:
+  serverless-offline:
+    lambdaPort: 3000
+  stepFunctionsLocal:
+    lambdaEndpoint: http://localhost:3000
+  offlineStepFunctions:
+    accountId: 123456789
+    host: localhost
+    port: 4584
+    functions:
+      first: first
+    
