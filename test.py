@@ -4,22 +4,24 @@ import json
 import time
 import unittest
 
-LAMBDA_ENDPOINT = 'http://localhost:3000'
+LAMBDA_ENDPOINT = 'http://localhost:3002'
 REGION = 'us-east-1'
-STATE_MACHINE_ARN = 'arn:aws:states:us-east-1:123456789:stateMachine:foo'
-SFN_ENDPOINT = 'http://localhost:4584'
+SFN_ENDPOINT = 'http://localhost:8083'
+ACCOUNT_ID = '123456789012'
 
-
-class TestStatus(unittest.TestCase):
+class TestStepFunctions(unittest.TestCase):
     def setUp(self):
-        cmd = 'serverless offline > /dev/null 2>&1 &'
+        cmd = 'serverless offline start > /dev/null 2>&1 &'
         os.system(cmd)
 
     def tearDown(self):
         cmd = "ps aux  |  grep -i 'serverless offline'  |  awk '{print $2}'  |  xargs kill -9"
         os.system(cmd)
+        cmd = "ps aux  |  grep -i 'StepFunctionsLocal.jar'  |  awk '{print $2}'  |  xargs kill -9"
+        os.system(cmd)
 
     def test_hello(self):
+        time.sleep(10)
         client = boto3.client('lambda',
                               endpoint_url=LAMBDA_ENDPOINT,
                               region_name=REGION)
@@ -30,18 +32,24 @@ class TestStatus(unittest.TestCase):
         res_json = json.loads(response['Payload'].read().decode("utf-8"))
         self.assertEqual(response['ResponseMetadata']['HTTPStatusCode'], 200)
         self.assertEqual(res_json['statusCode'], 200)
-
+        
         sfn = boto3.client('stepfunctions',
                            region_name=REGION,
                            endpoint_url=SFN_ENDPOINT)
+        
+        STATE_MACHINE_ARN = "arn:aws:states:us-east-1:%s:stateMachine:foo" % ACCOUNT_ID
 
-        sm_arn = 'arn:aws:states:us-east-1:123456789:stateMachine:foo'
+        execution = sfn.start_execution(stateMachineArn=STATE_MACHINE_ARN,
+        input='{"name":"James Bond"}')
 
-        execution = sfn.start_execution(stateMachineArn=sm_arn)
+        print(execution)
+        print("=================")
 
-        response = sfn.list_executions(stateMachineArn=sm_arn)
-
+        response = sfn.list_executions(stateMachineArn=STATE_MACHINE_ARN)
+        
         status = sfn.describe_execution(executionArn=execution["executionArn"])
+        print(status)
+        print("=================")
 
         time.sleep(5)
 

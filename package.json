@@ -5,9 +5,9 @@
   "license": "MIT",
   "dependencies": {
     "serverless-offline": "^6.4.0",
-    "serverless-offline-stepfunctions-local": "0.0.2",
-    "serverless-offline-stepfunctions-plugin": "0.0.1",
+    "serverless-offline-lambda": "^1.0.6",
     "serverless-step-functions": "^2.21.1",
-    "stepfunctions-local": "^1.3.1"
+    "serverless-step-functions-local": "^0.1.3",
+    "stepfunctions-localhost": "^0.2.0"
   }
 }

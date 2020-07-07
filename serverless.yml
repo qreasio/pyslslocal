@@ -4,9 +4,18 @@ service: pylocaltest
 
 plugins:
   - serverless-step-functions
-  - serverless-offline-stepfunctions-local
-  - serverless-offline-stepfunctions-plugin
+  - serverless-step-functions-local
+  - serverless-offline-lambda
   - serverless-offline
+  
+custom:
+  stepFunctionsLocal:
+    accountId: 123456789012
+    region: us-east-1
+    lambdaEndpoint: http://localhost:3002
+    TaskResourceMapping:
+      FirstState: arn:aws:lambda:us-east-1:123456789012:function:theFirst
+      FinalState: arn:aws:lambda:us-east-1:123456789012:function:theSecond
 
 provider:
   name: aws
@@ -26,26 +35,15 @@ stepFunctions:
   stateMachines:
     foo:
       definition:
-        StartAt: first
+        StartAt: FirstState
         States:
-          first:
+          FirstState:
               Type: Task
-              Resource: arn:aws:lambda:us-east-1:123456789:function:first
-              Next: welcome
-          welcome:
+              Resource: 
+                Fn::GetAtt: [first, Arn]
+              Next: FinalState
+          FinalState:
             Type: Task
-            Resource: arn:aws:lambda:us-east-1:123456789:function:second
+            Resource: 
+              Fn::GetAtt: [second, Arn]
             End: true
-
-custom:
-  serverless-offline:
-    lambdaPort: 3000
-  stepFunctionsLocal:
-    lambdaEndpoint: http://localhost:3000
-  offlineStepFunctions:
-    accountId: 123456789
-    host: localhost
-    port: 4584
-    functions:
-      first: first
-    
