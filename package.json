@@ -4,7 +4,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "serverless-offline": "^6.4.0",
+    "serverless-offline": "^12.0.4",
     "serverless-offline-lambda": "^1.0.6",
     "serverless-step-functions": "^2.21.1",
     "serverless-step-functions-local": "^0.1.3",
